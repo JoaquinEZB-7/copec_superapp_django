@@ -1,0 +1,36 @@
+<section class="screen" id="viaje">
+          <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
+          <div class="floorhead" style="background:linear-gradient(150deg,#7A3FF2,#4a1ea3)">
+            <button class="back" onclick="go('home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg> Inicio</button>
+            <div class="floortag">Piso · Planificación inteligente</div>
+            <h2>Modo Viaje Largo</h2>
+            <p>Usa los datos de tu RAV4 para estimar combustible, marcar las Copec en ruta y dónde parar a comer.</p>
+          </div>
+          <div class="pad" style="margin-top:16px">
+            <div class="triproute">
+              <div class="stop"><span class="marker" style="background:var(--green)"></span><span class="field">Santiago (mi ubicación)</span></div>
+              <div class="stopline"></div>
+              <div class="stop"><span class="marker" style="background:var(--orange)"></span><input id="dest" class="field" value="Elige tu destino…" readonly></div>
+              <div class="destbtns" id="destbtns">
+                {% for d in destinos %}<button data-id="{{ d.id }}" data-name="{{ d.nombre }}" onclick="pickDest(this)">{{ d.nombre }}</button>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="estimate" id="est">
+              <h3 class="block">Estimación con tu vehículo</h3>
+              <div class="estgrid">
+                <div class="est"><div class="ev" id="ekm">—</div><div class="el">Distancia</div></div>
+                <div class="est"><div class="ev" id="elt">—</div><div class="el">Bencina aprox.</div></div>
+                <div class="est"><div class="ev" id="ecl">—</div><div class="el">Costo aprox.</div></div>
+              </div>
+              <div class="miniinfo" style="margin-top:13px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg>
+                <p id="etip">Calculado con tu rendimiento real de 13,2 km/L (RAV4 2.0L).</p>
+              </div>
+
+              <h3 class="block">Copec recomendadas en ruta</h3>
+              <div id="stops"></div>
+            </div>
+          </div>
+        </section>

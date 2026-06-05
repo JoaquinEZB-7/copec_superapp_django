@@ -1,0 +1,39 @@
+<section class="screen" id="seguros" data-nav="inicio">
+  <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
+  <div class="floorhead" style="background:linear-gradient(150deg,#0E5FD8,#11203f)">
+    <button class="back" onclick="go('home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg> Inicio</button>
+    <div class="floortag">Piso · Demostración</div>
+    <h2>Seguros para tu vehículo</h2>
+    <p>Cotizador simulado de visión: usa la marca, modelo y año de tu auto para mostrar opciones de ejemplo.</p>
+  </div>
+
+  <div class="pad" style="margin-top:16px">
+    <div class="card segurohero">
+      <div class="row">
+        <div class="ic" style="background:var(--blue-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="#0E5FD8" stroke-width="2"><path d="M12 3l7 4v5c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V7l7-4z"/><path d="M9.5 12.5l1.8 1.8 3.7-4"/></svg></div>
+        <div class="tx">
+          <h5>Seguro para tu {{ vehiculo.modelo }} {{ vehiculo.anio }} desde $28.900/mes</h5>
+          <span>Simulación de demostración basada en tu {{ vehiculo.marca }} {{ vehiculo.modelo }} {{ vehiculo.anio }}.</span>
+        </div>
+      </div>
+      <button class="homebtn" style="margin-top:14px" onclick="document.getElementById('seguro-msg').textContent='Cotización simulada: tus opciones quedaron generadas solo con fines de demo, sin contratación real.';">Cotizar</button>
+      <div class="quote-msg" id="seguro-msg">Cotización simulada sin validez comercial. Solo muestra la visión del producto.</div>
+    </div>
+
+    <h3 class="block">Planes de ejemplo</h3>
+    <div class="plan-list">
+      <div class="plan-card">
+        <div class="plan-top"><span class="pill" style="background:#E8F0FE;color:var(--blue)">Básico</span><strong>$28.900/mes</strong></div>
+        <p>Responsabilidad civil, asistencia básica y cobertura urbana.</p>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-top"><span class="pill" style="background:#FFF1E6;color:var(--orange)">Completo</span><strong>$41.900/mes</strong></div>
+        <p>Incluye colisión, robo y grúa 24/7 para tu RAV4 2022.</p>
+      </div>
+      <div class="plan-card">
+        <div class="plan-top"><span class="pill" style="background:#FFF6E0;color:var(--amber)">Plus</span><strong>$55.900/mes</strong></div>
+        <p>Cobertura ampliada y auto de reemplazo en este ejemplo de demo.</p>
+      </div>
+    </div>
+  </div>
+</section>

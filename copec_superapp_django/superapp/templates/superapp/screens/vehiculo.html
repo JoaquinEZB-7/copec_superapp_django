@@ -1,0 +1,69 @@
+<section class="screen" id="vehiculo" data-nav="vehiculo">
+          <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
+          <div class="floorhead" style="background:linear-gradient(155deg,#11203f,#1c3a6b)">
+            <button class="back" onclick="go('home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg> Inicio</button>
+            <div class="floortag">Piso · Movilidad personal</div>
+            <h2>Mi Vehículo</h2>
+            <p>La app reconoce tu auto y su motor para darte rendimiento, mantenciones e historial reales.</p>
+          </div>
+          <div class="pad" style="margin-top:16px">
+            <div class="vehcard">
+              <div class="glow"></div>
+              <div class="vh">
+                <div><div class="mk">{{ vehiculo.ficha }}</div><h3>{{ vehiculo.modelo }} {{ vehiculo.anio }}</h3></div>
+                <div class="plate">{{ vehiculo.patente }}</div>
+              </div>
+            </div>
+
+            <h3 class="block">Estado actual</h3>
+            <div class="metrics">
+              <div class="metric">
+                <div class="mlbl">⛽ Rendimiento real</div>
+                <div class="mval">{{ vehiculo.rendimiento_fmt }} <small>km/L</small></div>
+                <div class="mbar"><i style="width:78%;background:var(--green)"></i></div>
+              </div>
+              <div class="metric">
+                <div class="mlbl">🛢️ Cambio de aceite</div>
+                <div class="mval">{{ vehiculo.km_prox_fmt }} <small>km</small></div>
+                <div class="mbar"><i style="width:82%;background:var(--orange)"></i></div>
+              </div>
+              <div class="metric">
+                <div class="mlbl">🛞 Presión neumáticos</div>
+                <div class="mval">{{ vehiculo.presion_del }} <small>psi rec.</small></div>
+                <div class="mbar"><i style="width:90%;background:var(--blue)"></i></div>
+              </div>
+              <div class="metric">
+                <div class="mlbl">📏 Kilometraje</div>
+                <div class="mval">{{ vehiculo.km_fmt }} <small>km</small></div>
+                <div class="mbar"><i style="width:55%;background:var(--navy)"></i></div>
+              </div>
+              <div class="metric">
+                <div class="mlbl">⛽ Combustible</div>
+                <div class="mval">{{ vehiculo.nivel_combustible }} <small>%</small></div>
+                <div class="mbar"><i style="width:{{ vehiculo.nivel_combustible }}%;background:var(--orange)"></i></div>
+                <div class="submetric">Autonomía estimada: <b>{{ vehiculo.autonomia_km }} km</b></div>
+              </div>
+            </div>
+
+            {% if vehiculo.alerta_baja %}
+            <a class="miniinfo alertlink" href="javascript:go('mapa')" style="margin-top:14px;text-decoration:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg>
+              <p>Te quedan ~{{ vehiculo.autonomia_km }} km · <b>Copec más cercana a 0,9 km</b></p>
+            </a>
+            {% endif %}
+
+            <div class="miniinfo" style="margin-top:14px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg>
+              <p>Último aceite usado: <b>{{ vehiculo.aceite_actual }}</b>. El fabricante recomienda {{ vehiculo.presion_del }} psi delanteros / {{ vehiculo.presion_tra }} psi traseros.</p>
+            </div>
+
+            <h3 class="block">Historial del vehículo</h3>
+            <div class="card">
+              <div class="timeline">
+                {% for m in mantenciones %}
+                <div class="tlitem"><span class="dot" style="background:var(--{{ m.color }})"></span><h6>{{ m.tipo }}</h6><span>{{ m.detalle }}</span></div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </section>

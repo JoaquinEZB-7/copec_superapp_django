@@ -1,0 +1,43 @@
+<section class="screen" id="actividad" data-nav="inicio">
+  <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
+  <div class="floorhead" style="background:linear-gradient(155deg,#0A2A66,#0E5FD8)">
+    <button class="back" onclick="go('home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg> Inicio</button>
+    <div class="floortag">Piso · Actividad reciente</div>
+    <h2>Notificaciones</h2>
+    <p>Movimientos del auto, promociones, misiones y actualizaciones de billetera en un solo lugar.</p>
+  </div>
+
+  <div class="pad" style="margin-top:16px">
+    {% for n in notificaciones_recientes %}
+    <div class="card notifcard">
+      <div class="row">
+        <div class="ic" style="background:{% if n.tipo == 'vehiculo' %}#E8F0FE{% elif n.tipo == 'promo' %}#FFF1E6{% elif n.tipo == 'mision' %}#FFF6E0{% elif n.tipo == 'carga' %}#E3F7EF{% else %}#F0F2F7{% endif %}">
+          {% if n.tipo == 'vehiculo' %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0E5FD8" stroke-width="2"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M5 13h14v4H5z"/></svg>
+          {% elif n.tipo == 'promo' %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FF6A13" stroke-width="2"><path d="M4 7h16l-1.2 10.5a2 2 0 0 1-2 1.5H7.2a2 2 0 0 1-2-1.5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          {% elif n.tipo == 'mision' %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFB020" stroke-width="2"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.3 6.8 19l1-5.8L3.6 9.1l5.8-.8z"/></svg>
+          {% elif n.tipo == 'carga' %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00B377" stroke-width="2"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
+          {% else %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6A748C" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg>
+          {% endif %}
+        </div>
+        <div class="tx">
+          <h5>{{ n.titulo }}</h5>
+          <span>{{ n.detalle }}</span>
+        </div>
+        {% if not n.leida %}<span class="pill" style="background:#E8F0FE;color:var(--blue)">Nueva</span>{% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="card">
+      <div class="row">
+        <div class="ic" style="background:#F0F2F7"><svg viewBox="0 0 24 24" fill="none" stroke="#6A748C" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg></div>
+        <div class="tx"><h5>Sin actividad todavía</h5><span>Cuando existan notificaciones aparecerán aquí.</span></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>

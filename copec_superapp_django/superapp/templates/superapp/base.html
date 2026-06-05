@@ -1,0 +1,63 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copec · Super App de Movilidad — Prototipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'superapp/css/styles.css' %}">
+</head>
+<body>
+<div class="stage">
+  <div class="pitch">
+    <div class="kick">Prototipo · Innovación 2</div>
+    <h1>Una app, varios servicios — cada uno con vida propia.</h1>
+    <p>Modelo Uber: el shell es el <b>edificio</b> y cada servicio es un <b>piso</b> independiente. El ascensor (navegación) te mueve entre pisos sin mezclarlos.</p>
+    <div class="floor"><span style="background:#0E5FD8"></span><div><b>Movilidad</b> — BlueExpress, carga eléctrica y mantención dentro de la app.</div></div>
+    <div class="floor"><span style="background:#00B377"></span><div><b>Mi Vehículo</b> — perfil del auto: rendimiento, aceite, neumáticos, historial.</div></div>
+    <div class="floor"><span style="background:#FF6A13"></span><div><b>Pronto Market</b> — promos diarias, misiones y canje de puntos Full.</div></div>
+    <div class="floor"><span style="background:#7A3FF2"></span><div><b>Viaje Largo</b> — planifica con los datos de tu auto y las Copec en ruta.</div></div>
+  </div>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screenwrap">
+      <div class="viewport" id="viewport">
+        {% include "superapp/screens/home.html" %}
+        {% include "superapp/screens/actividad.html" %}
+        {% include "superapp/screens/cargando.html" %}
+        {% include "superapp/screens/vehiculo.html" %}
+        {% include "superapp/screens/blueexpress.html" %}
+        {% include "superapp/screens/carga.html" %}
+        {% include "superapp/screens/mantencion.html" %}
+        {% include "superapp/screens/seguros.html" %}
+        {% include "superapp/screens/market.html" %}
+        {% include "superapp/screens/viaje.html" %}
+        {% include "superapp/screens/mapa.html" %}
+        {% include "superapp/screens/full.html" %}
+      </div>
+      <div class="navbar">
+        <button class="navbtn on" data-target="inicio" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg>Inicio</button>
+        <button class="navbtn" data-target="mapa" onclick="go('mapa')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4l6 2 6-2v15l-6 2-6-2-6 2V6z"/><path d="M9 4v15M15 6v15"/></svg>Mapa</button>
+        <button class="navbtn" data-target="vehiculo" onclick="go('vehiculo')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M5 13h14v4H5z"/></svg>Vehículo</button>
+        <button class="navbtn" data-target="market" onclick="go('market')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16l-1.2 10.5a2 2 0 0 1-2 1.5H7.2a2 2 0 0 1-2-1.5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Market</button>
+        <button class="navbtn" data-target="perfil" onclick="go('vehiculo')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>Perfil</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const VIAJE_API = "{% url 'calcular_viaje' %}";
+</script>
+<script src="{% static 'superapp/js/app.js' %}"></script>
+</body>
+</html>

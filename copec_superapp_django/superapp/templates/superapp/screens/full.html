@@ -1,0 +1,31 @@
+<section class="screen" id="full">
+          <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
+          <div class="floorhead" style="background:linear-gradient(150deg,#FFB020,#FF6A13)">
+            <button class="back" onclick="go('home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg> Inicio</button>
+            <div class="floortag">Piso · Lealtad</div>
+            <h2>Beneficios Full</h2>
+            <p>Tus puntos, misiones y alianzas — el mismo perfil que usa toda la app.</p>
+          </div>
+          <div class="pad" style="margin-top:16px">
+            <div class="vehcard" style="background:linear-gradient(150deg,#FF6A13,#FFB020)">
+              <div class="vh"><div><div class="mk" style="opacity:.85">Puntos Full disponibles</div><h3 style="font-size:30px">12.540</h3></div><div style="text-align:right"><div class="mk" style="opacity:.85">Nivel</div><h3 style="font-size:20px">Full Oro</h3></div></div>
+            </div>
+
+            <div class="card cupocard">
+              <div class="row">
+                <div class="ic" style="background:#FFF1E6"><svg viewBox="0 0 24 24" fill="none" stroke="#FF6A13" stroke-width="2"><path d="M7 3h7v18H7z"/><path d="M14 6h2.5a3 3 0 0 1 3 3v5a2 2 0 0 1-2 2H16"/></svg></div>
+                <div class="tx">
+                  <h5>Cupo de combustible</h5>
+                  <span>Se habilita por tu historial de consumo de combustible en Copec.</span>
+                </div>
+              </div>
+              <div class="cupoamount">{{ perfil.cupo_fmt }}</div>
+              <div class="cupoextra">Cupo sugerido por historial: <b>{{ cupo_sugerido_fmt }}</b></div>
+              <button class="homebtn cupobtn" onclick="go('mapa')">Usar cupo en mi próxima carga</button>
+            </div>
+
+            <h3 class="block">Alianzas y canjes</h3>
+            <div class="card tap"><div class="row"><div class="ic" style="background:#FFF6E0"><svg viewBox="0 0 24 24" fill="none" stroke="#FFB020" stroke-width="2"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.3 6.8 19l1-5.8L3.6 9.1l5.8-.8z"/></svg></div><div class="tx"><h5>Catálogo Full</h5><span>Canjea puntos por productos y combustible</span></div><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></div>
+            <div class="card tap"><div class="row"><div class="ic" style="background:#FFF6E0"><svg viewBox="0 0 24 24" fill="none" stroke="#FFB020" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></div><div class="tx"><h5>Tarjetas asociadas</h5><span>2 tarjetas vinculadas a Copec Pay</span></div><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></div>
+          </div>
+        </section>

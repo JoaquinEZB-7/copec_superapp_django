@@ -1,0 +1,130 @@
+<section class="screen active" id="home" data-nav="inicio">
+          <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
+          <div class="home-top">
+            <div class="greet">
+              <div><div class="hi">Hola, buenas tardes</div><div class="name">{{ perfil.nombre }} 👋</div></div>
+              <div class="home-actions">
+                <button class="bellbtn" onclick="go('actividad')" aria-label="Ver actividad reciente">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/><path d="M9 17a3 3 0 0 0 6 0"/></svg>
+                </button>
+                <div class="avatar">J</div>
+              </div>
+            </div>
+            <div class="wallet">
+              <div class="wcard">
+                <div class="lbl"><span class="wdot" style="background:var(--green)"></span>Copec Pay</div>
+                <div class="val">{{ perfil.saldo_fmt }}</div>
+                <div class="sub">Saldo disponible</div>
+              </div>
+              <div class="wcard">
+                <div class="lbl"><span class="wdot" style="background:var(--amber)"></span>Puntos Full</div>
+                <div class="val">{{ perfil.puntos_fmt }}</div>
+                <div class="sub">≈ {{ perfil.canje_fmt }} en canjes</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="deck pad">
+            <div class="sectlabel">Servicios <a>Editar</a></div>
+            <div class="grid">
+              <button class="tile" onclick="go('mapa')">
+                <div class="ticon" style="background:var(--blue-soft)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0E5FD8" stroke-width="2"><path d="M12 22s8-7.5 8-13a8 8 0 1 0-16 0c0 5.5 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                </div><span class="tl">Combustible</span>
+              </button>
+              <button class="tile" onclick="go('vehiculo')">
+                <div class="ticon" style="background:var(--green-soft)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00B377" stroke-width="2"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M5 13h14v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H8v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><circle cx="7.5" cy="15.5" r=".6"/><circle cx="16.5" cy="15.5" r=".6"/></svg>
+                </div><span class="tl">Mi Vehículo</span>
+              </button>
+              <button class="tile" onclick="go('blueexpress')">
+                <div class="ticon" style="background:#E6F0FF">
+                  <span class="badge">Nuevo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0E5FD8" stroke-width="2"><rect x="2" y="8" width="13" height="9" rx="1.5"/><path d="M15 11h4l2 3v3h-6z"/><circle cx="6" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+                </div><span class="tl">BlueExpress</span>
+              </button>
+              <button class="tile" onclick="go('carga')">
+                <div class="ticon" style="background:var(--green-soft)">
+                  <span class="badge">Nuevo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00B377" stroke-width="2"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
+                </div><span class="tl">Carga eléctrica</span>
+              </button>
+              <button class="tile" onclick="go('mantencion')">
+                <div class="ticon" style="background:#FFF1E6">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#FF6A13" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4l-6 6 2 2 6-6a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2z"/></svg>
+                </div><span class="tl">Mantención</span>
+              </button>
+              <button class="tile" onclick="go('seguros')">
+                <div class="ticon" style="background:#EEF6FF">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0E5FD8" stroke-width="2"><path d="M12 3l7 4v5c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V7l7-4z"/><path d="M9.5 12.5l1.8 1.8 3.7-4"/></svg>
+                </div><span class="tl">Seguros</span>
+              </button>
+              <button class="tile" onclick="go('market')">
+                <div class="ticon" style="background:#FFF1E6">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#FF6A13" stroke-width="2"><path d="M4 7h16l-1.2 10.5a2 2 0 0 1-2 1.5H7.2a2 2 0 0 1-2-1.5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+                </div><span class="tl">Pronto Market</span>
+              </button>
+              <button class="tile" onclick="go('viaje')">
+                <div class="ticon" style="background:#EFE8FF">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#7A3FF2" stroke-width="2"><path d="M3 12h12l5 9V3z"/><path d="M3 12V8m0 8v-4"/></svg>
+                </div><span class="tl">Viaje largo</span>
+              </button>
+              <button class="tile" onclick="go('full')">
+                <div class="ticon" style="background:#FFF6E0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#FFB020" stroke-width="2"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.3 6.8 19l1-5.8L3.6 9.1l5.8-.8z"/></svg>
+                </div><span class="tl">Beneficios Full</span>
+              </button>
+            </div>
+
+            <div class="sectlabel">Servicios sugeridos <a>Ver</a></div>
+            <div class="card service-list">
+              {% for servicio in servicios_app %}
+              <div class="service-row {% if servicio.sugerido %}suggested{% endif %}" onclick="go('{{ servicio.piso_destino }}')">
+                <div class="service-dot service-{{ servicio.icono }}"></div>
+                <div class="service-tx">
+                  <h6>{{ servicio.nombre }}</h6>
+                  <span>Piso {{ servicio.piso_destino }}</span>
+                </div>
+                {% if servicio.sugerido %}<span class="pill" style="background:#FFF1E6;color:var(--orange)">Sugerido</span>{% endif %}
+              </div>
+              {% endfor %}
+            </div>
+
+            <div class="sectlabel">Hoy con Copec <a>Ver todo</a></div>
+            <div class="carousel">
+              <div class="promo" style="background:linear-gradient(135deg,#0E5FD8,#0A2A66)">
+                <div class="ribbon">2x1</div>
+                <div class="blob" style="width:120px;height:120px;background:#1f74ff;top:-30px;right:-20px"></div>
+                <h4>Café Pronto 2x1</h4><p>Todos los días antes de las 11:00 hrs</p>
+              </div>
+              <div class="promo" style="background:linear-gradient(135deg,#FF6A13,#FFB020)">
+                <div class="ribbon">+15%</div>
+                <div class="blob" style="width:130px;height:130px;background:#ff8b3d;bottom:-40px;left:-10px"></div>
+                <h4>Puntos Full x1.5</h4><p>Cargando con Copec Pay este fin de semana</p>
+              </div>
+              <div class="promo" style="background:linear-gradient(135deg,#00B377,#0a8f60)">
+                <div class="ribbon">Eco</div>
+                <h4>Carga eléctrica</h4><p>$120/kWh en estaciones seleccionadas</p>
+              </div>
+            </div>
+
+            <div class="sectlabel">Para ti <a>Ver más</a></div>
+            <div class="carousel">
+              {% for r in recomendaciones %}
+              <div class="promo recpromo" style="background:linear-gradient(135deg,{% if r.tono == 'blue' %}#0E5FD8,#0A2A66{% elif r.tono == 'orange' %}#FF6A13,#FFB020{% else %}#00B377,#0a8f60{% endif %})" onclick="go('{{ r.piso_destino }}')">
+                <div class="ribbon">{{ r.piso_destino|title }}</div>
+                <h4>{{ r.texto }}</h4><p>{{ r.detalle }}</p>
+              </div>
+              {% endfor %}
+            </div>
+
+            <div class="sectlabel">Tu vehículo <a onclick="go('vehiculo')">Detalle</a></div>
+            <div class="card tap" onclick="go('vehiculo')">
+              <div class="row">
+                <div class="ic" style="background:#11203f"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M5 13h14v4H5z"/></svg></div>
+                <div class="tx"><h5>{{ vehiculo.nombre_completo }}</h5><span>Próxima mantención en <b style="color:var(--orange)">{{ vehiculo.km_prox_fmt }} km</b> · {{ vehiculo.prox_servicio }}</span></div>
+                <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
+            </div>
+          </div>
+        </section>
