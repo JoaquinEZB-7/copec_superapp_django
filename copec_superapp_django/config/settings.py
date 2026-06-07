@@ -1,8 +1,28 @@
+import os
 from pathlib import Path
+
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'dev-key-cambiar-en-produccion'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+
+# La SECRET_KEY ahora se lee de una variable de entorno en producción.
+# (En Render la defines en el dashboard; localmente usa la de desarrollo.)
+SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-key-cambiar-en-produccion')
+
+# Render define automáticamente la variable de entorno RENDER.
+# Local -> DEBUG True. En Render -> DEBUG False (salvo que pongas DEBUG=True a mano).
+IS_RENDER = 'RENDER' in os.environ
+DEBUG = os.environ.get('DEBUG', 'False' if IS_RENDER else 'True') == 'True'
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# Necesario para que el login del admin funcione sobre HTTPS en Render.
+CSRF_TRUSTED_ORIGINS = []
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -15,6 +35,8 @@ INSTALLED_APPS = [
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise va justo después de SecurityMiddleware para servir los estáticos.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -34,10 +56,29 @@ TEMPLATES = [{
     ]},
 }]
 WSGI_APPLICATION = 'config.wsgi.application'
-DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
+
+# Si existe DATABASE_URL (Render) usa Postgres; si no (local), usa SQLite.
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+    )
+}
+
 LANGUAGE_CODE = 'es-cl'
 TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
+
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
