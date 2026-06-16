@@ -3,6 +3,20 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from .utils import clp, dec1
 
 
+TIPOS_CARROCERIA = [
+    ("SUV", "SUV"),
+    ("Sedán", "Sedán"),
+    ("Hatchback", "Hatchback"),
+    ("Camioneta", "Camioneta"),
+    ("Station Wagon", "Station Wagon"),
+    ("City Car", "City Car"),
+]
+
+MOTORES = [("1.2", "1.2"), ("1.4", "1.4"), ("1.6", "1.6"), ("1.7", "1.7"), ("1.8", "1.8"), ("2.0", "2.0"), ("2.5", "2.5")]
+
+COMBUSTIBLES = [("Gasolina", "Gasolina"), ("Diésel", "Diésel"), ("Híbrido", "Híbrido"), ("Eléctrico", "Eléctrico")]
+
+
 class PerfilUsuario(models.Model):
     nombre = models.CharField(max_length=60, default="Joaquín")
     saldo_copec_pay = models.IntegerField(default=48200)
@@ -87,9 +101,10 @@ class Vehiculo(models.Model):
     marca = models.CharField(max_length=40, default="Toyota")
     modelo = models.CharField(max_length=40, default="RAV4")
     anio = models.IntegerField(default=2022)
-    motor = models.CharField(max_length=20, default="2.0L")
+    tipo_carroceria = models.CharField(max_length=20, choices=TIPOS_CARROCERIA, default="SUV")
+    motor = models.CharField(max_length=4, choices=MOTORES, default="2.0")
     traccion = models.CharField(max_length=20, default="4x4")
-    combustible = models.CharField(max_length=20, default="Gasolina")
+    combustible = models.CharField(max_length=20, choices=COMBUSTIBLES, default="Gasolina")
     patente = models.CharField(max_length=10, default="KJ·PR·45")
     kilometraje = models.IntegerField(default=42760)
     rendimiento_kml = models.FloatField("Rendimiento (km/L)", default=13.2)

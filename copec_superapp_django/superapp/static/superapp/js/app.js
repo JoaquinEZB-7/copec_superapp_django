@@ -1,6 +1,20 @@
   const vp = document.getElementById('viewport');
   const PRECIO_93 = 1149;
   let cargaTimer = null;
+  const BLUEEXPRESS_ESTADO = {
+    pedido: '#BX-90412',
+    estado: 'En reparto',
+    detalle: 'En reparto · llega hoy 16:30–18:00',
+    color: 'var(--orange)',
+  };
+  const MARKET_ITEMS = {
+    cafe: { nombre: 'Café 12 oz', precio: 1490, color: 'orange' },
+    sandwich: { nombre: 'Sándwich', precio: 3990, color: 'blue' },
+    agua: { nombre: 'Agua', precio: 990, color: 'green' },
+    snack: { nombre: 'Snack', precio: 1890, color: 'amber' },
+  };
+  const MARKET_STORE_DEFAULT = 'Pronto Copec Talcahuano';
+  const marketCarrito = { cafe: 0, sandwich: 0, agua: 0, snack: 0 };
 
   function clpUI(n){
     return Math.round(n).toLocaleString('es-CL');
@@ -88,7 +102,128 @@
       iniciarCargaSimulada();
       return;
     }
+    if(next && next.id === 'blueexpress'){
+      inicializarBlueExpress();
+      return;
+    }
+    if(next && next.id === 'market'){
+      inicializarMarket();
+      return;
+    }
     detenerCargaSimulada();
+  }
+
+  function pintarBlueExpressEstado(){
+    const orderId = document.getElementById('bx-order-id');
+    const orderStatus = document.getElementById('bx-order-status');
+    const orderPill = document.getElementById('bx-order-pill');
+    const trackNumber = document.getElementById('bx-track-number');
+    if(orderId) orderId.textContent = `Pedido ${BLUEEXPRESS_ESTADO.pedido}`;
+    if(orderStatus) orderStatus.textContent = BLUEEXPRESS_ESTADO.detalle;
+    if(orderPill){
+      orderPill.textContent = BLUEEXPRESS_ESTADO.estado;
+      orderPill.style.background = 'var(--green-soft)';
+      orderPill.style.color = 'var(--green)';
+    }
+    if(trackNumber && !trackNumber.value) trackNumber.value = BLUEEXPRESS_ESTADO.pedido;
+  }
+
+  function trackBlueExpressPedido(){
+    const trackNumber = document.getElementById('bx-track-number');
+    if(trackNumber && !trackNumber.value.trim()){
+      trackNumber.value = BLUEEXPRESS_ESTADO.pedido;
+    }
+    pintarBlueExpressEstado();
+  }
+
+  function inicializarBlueExpress(){
+    pintarBlueExpressEstado();
+    const trackNumber = document.getElementById('bx-track-number');
+    if(trackNumber){
+      trackNumber.oninput = pintarBlueExpressEstado;
+      trackNumber.addEventListener('keydown', (event)=>{
+        if(event.key === 'Enter'){
+          event.preventDefault();
+          trackBlueExpressPedido();
+        }
+      });
+    }
+    const form = document.getElementById('bx-track-form');
+    if(form){
+      form.onsubmit = (event)=>{
+        event.preventDefault();
+        trackBlueExpressPedido();
+      };
+    }
+  }
+
+  function marketChangeQty(itemKey, delta){
+    if(!(itemKey in marketCarrito)) return;
+    marketCarrito[itemKey] = Math.max(0, marketCarrito[itemKey] + delta);
+    actualizarMarketUI();
+  }
+
+  function actualizarMarketUI(){
+    const storeSelect = document.getElementById('market-store-select');
+    const cartItems = document.getElementById('market-cart-items');
+    const cartCount = document.getElementById('market-cart-count');
+    const cartTotal = document.getElementById('market-cart-total');
+    const confirmMsg = document.getElementById('market-confirm-msg');
+    const confirmText = document.getElementById('market-confirm-text');
+    const totalCount = Object.values(marketCarrito).reduce((sum, qty)=>sum + qty, 0);
+    const total = Object.entries(marketCarrito).reduce((sum, [key, qty])=>sum + qty * MARKET_ITEMS[key].precio, 0);
+
+    Object.entries(marketCarrito).forEach(([key, qty])=>{
+      const qtyEl = document.getElementById(`market-qty-${key}`);
+      if(qtyEl) qtyEl.textContent = String(qty);
+    });
+
+    if(cartCount) cartCount.textContent = `${totalCount} ${totalCount === 1 ? 'producto' : 'productos'}`;
+    if(cartTotal) cartTotal.textContent = '$' + clpUI(total);
+
+    if(cartItems){
+      const lines = Object.entries(marketCarrito)
+        .filter(([, qty]) => qty > 0)
+        .map(([key, qty]) => {
+          const item = MARKET_ITEMS[key];
+          const subtotal = item.precio * qty;
+          return `<div class="tlitem" style="padding-bottom:12px"><h6>${item.nombre} x${qty}</h6><span>$${clpUI(subtotal)}</span></div>`;
+        });
+      cartItems.innerHTML = lines.length ? lines.join('') : '<div class="note" style="padding:0;text-align:left">Tu carrito está vacío. Agrega café, sándwich, agua o snack.</div>';
+    }
+
+    if(confirmMsg && confirmText){
+      confirmMsg.style.display = 'none';
+      confirmText.textContent = '';
+    }
+  }
+
+  function inicializarMarket(){
+    const storeSelect = document.getElementById('market-store-select');
+    if(storeSelect && !storeSelect.value){
+      storeSelect.value = MARKET_STORE_DEFAULT;
+    }
+    actualizarMarketUI();
+    if(storeSelect){
+      storeSelect.onchange = actualizarMarketUI;
+    }
+  }
+
+  function marketConfirmOrder(){
+    const totalCount = Object.values(marketCarrito).reduce((sum, qty)=>sum + qty, 0);
+    const total = Object.entries(marketCarrito).reduce((sum, [key, qty])=>sum + qty * MARKET_ITEMS[key].precio, 0);
+    const storeSelect = document.getElementById('market-store-select');
+    const confirmMsg = document.getElementById('market-confirm-msg');
+    const confirmText = document.getElementById('market-confirm-text');
+    if(!confirmMsg || !confirmText) return;
+    confirmMsg.style.display = 'flex';
+    confirmText.innerHTML = `Pedido confirmado · listo para retiro en ${storeSelect ? storeSelect.value : MARKET_STORE_DEFAULT} en ~10 min · pagado con Copec Pay · +120 puntos Full`;
+    if(totalCount === 0){
+      confirmText.innerHTML = 'Pedido confirmado · listo para retiro en ' + (storeSelect ? storeSelect.value : MARKET_STORE_DEFAULT) + ' en ~10 min · pagado con Copec Pay · +120 puntos Full';
+    }
+    if(total > 0){
+      confirmText.innerHTML = `Pedido confirmado · listo para retiro en ${storeSelect ? storeSelect.value : MARKET_STORE_DEFAULT} en ~10 min · pagado con Copec Pay · +120 puntos Full`;
+    }
   }
 
   function go(id){

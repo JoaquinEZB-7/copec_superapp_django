@@ -3,4 +3,3 @@ gunicorn
 psycopg2-binary
 dj-database-url
 whitenoise
-dj-database-url

@@ -11,6 +11,82 @@
             <div class="mission"><div class="pct" style="--p:240deg"><b>66%</b></div><div class="tx" style="flex:1"><h6 style="font-size:13.5px;font-weight:700">Carga 3 veces este mes</h6><span style="font-size:11.5px;color:var(--muted)">2 de 3 · +500 puntos al completar</span></div></div>
             <div class="mission"><div class="pct" style="--p:120deg"><b>33%</b></div><div class="tx" style="flex:1"><h6 style="font-size:13.5px;font-weight:700">Café Pronto x3</h6><span style="font-size:11.5px;color:var(--muted)">1 de 3 · +200 puntos</span></div></div>
 
+            <h3 class="block">Pronto más cercano</h3>
+            <div class="card">
+              <div class="row" style="align-items:flex-start">
+                <div class="ic" style="background:var(--orange);color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.5 8-13a8 8 0 1 0-16 0c0 5.5 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+                <div class="tx" style="flex:1">
+                  <label for="market-store-select" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">Selecciona un local</label>
+                  <select id="market-store-select" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:600 14px 'Hanken Grotesk';color:var(--ink);background:#fff;outline:none">
+                    <option value="Pronto Copec Talcahuano">Pronto Copec Talcahuano</option>
+                    <option value="Pronto Copec Hualpén">Pronto Copec Hualpén</option>
+                    <option value="Pronto Copec San Pedro de la Paz">Pronto Copec San Pedro de la Paz</option>
+                  </select>
+                  <div class="note" style="padding:8px 0 0;text-align:left">Retiro estimado en el local elegido: ~10 min.</div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="block">Haz tu pedido</h3>
+            <div class="card" id="market-products">
+              <div class="service-list" style="padding:0">
+                <div class="service-row" data-item="cafe" data-name="Café 12 oz" data-price="1490">
+                  <div class="service-dot service-orange"></div>
+                  <div class="service-tx"><h6>Café 12 oz</h6><span>$1.490</span></div>
+                  <div class="row" style="gap:8px;align-items:center">
+                    <button type="button" class="pill" onclick="marketChangeQty('cafe', -1)" style="border:none;background:#F0F2F7;color:var(--ink);cursor:pointer">−</button>
+                    <span class="pill" id="market-qty-cafe" style="min-width:34px;text-align:center;background:#FFF1E6;color:var(--orange)">0</span>
+                    <button type="button" class="pill" onclick="marketChangeQty('cafe', 1)" style="border:none;background:#FFF1E6;color:var(--orange);cursor:pointer">+</button>
+                  </div>
+                </div>
+                <div class="service-row" data-item="sandwich" data-name="Sándwich" data-price="3990">
+                  <div class="service-dot service-blue"></div>
+                  <div class="service-tx"><h6>Sándwich</h6><span>$3.990</span></div>
+                  <div class="row" style="gap:8px;align-items:center">
+                    <button type="button" class="pill" onclick="marketChangeQty('sandwich', -1)" style="border:none;background:#F0F2F7;color:var(--ink);cursor:pointer">−</button>
+                    <span class="pill" id="market-qty-sandwich" style="min-width:34px;text-align:center;background:#E8F0FE;color:var(--blue)">0</span>
+                    <button type="button" class="pill" onclick="marketChangeQty('sandwich', 1)" style="border:none;background:#E8F0FE;color:var(--blue);cursor:pointer">+</button>
+                  </div>
+                </div>
+                <div class="service-row" data-item="agua" data-name="Agua" data-price="990">
+                  <div class="service-dot service-green"></div>
+                  <div class="service-tx"><h6>Agua</h6><span>$990</span></div>
+                  <div class="row" style="gap:8px;align-items:center">
+                    <button type="button" class="pill" onclick="marketChangeQty('agua', -1)" style="border:none;background:#F0F2F7;color:var(--ink);cursor:pointer">−</button>
+                    <span class="pill" id="market-qty-agua" style="min-width:34px;text-align:center;background:#E3F7EF;color:var(--green)">0</span>
+                    <button type="button" class="pill" onclick="marketChangeQty('agua', 1)" style="border:none;background:#E3F7EF;color:var(--green);cursor:pointer">+</button>
+                  </div>
+                </div>
+                <div class="service-row" data-item="snack" data-name="Snack" data-price="1890">
+                  <div class="service-dot service-amber"></div>
+                  <div class="service-tx"><h6>Snack</h6><span>$1.890</span></div>
+                  <div class="row" style="gap:8px;align-items:center">
+                    <button type="button" class="pill" onclick="marketChangeQty('snack', -1)" style="border:none;background:#F0F2F7;color:var(--ink);cursor:pointer">−</button>
+                    <span class="pill" id="market-qty-snack" style="min-width:34px;text-align:center;background:#FFF6E0;color:var(--amber)">0</span>
+                    <button type="button" class="pill" onclick="marketChangeQty('snack', 1)" style="border:none;background:#FFF6E0;color:var(--amber);cursor:pointer">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="block">Carrito</h3>
+            <div class="card" id="market-cart">
+              <div class="row" style="margin-bottom:10px">
+                <div class="ic" style="background:#FFF1E6"><svg viewBox="0 0 24 24" fill="none" stroke="#FF6A13" stroke-width="2"><path d="M4 4h2l2.5 11h9.8l1.7-7H7.2"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg></div>
+                <div class="tx"><h5 id="market-cart-count">0 productos</h5><span>Resumen del pedido simulado</span></div>
+              </div>
+              <div id="market-cart-items" class="timeline" style="padding-left:0"></div>
+              <div class="miniinfo" style="margin-top:12px;background:#FFF8F2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg>
+                <p>Total: <b id="market-cart-total">$0</b> · pago con Copec Pay.</p>
+              </div>
+              <button type="button" class="homebtn" id="market-confirm-btn" onclick="marketConfirmOrder()">Confirmar pedido</button>
+              <div class="miniinfo" id="market-confirm-msg" style="display:none;margin-top:12px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 12.5l1.8 1.8 3.7-4"/></svg>
+                <p id="market-confirm-text"></p>
+              </div>
+            </div>
+
             <h3 class="block">Promos de hoy</h3>
             <div class="mkpgrid">
               <div class="mkpcard"><div class="top" style="background:linear-gradient(135deg,#FF6A13,#FFB020)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a3 3 0 0 1 0 6h-1M4 8h14v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/></svg></div><div class="bd"><h6>Café 12 oz</h6><div class="pr">2x1 hasta 11:00</div><div class="pts">o 150 pts</div></div></div>

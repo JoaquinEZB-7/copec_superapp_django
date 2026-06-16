@@ -1,0 +1,77 @@
+<section class="screen{% if active_screen == 'agregar_vehiculo' %} active{% endif %}" id="agregar_vehiculo" data-nav="vehiculo">
+  <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
+  <div class="floorhead" style="background:linear-gradient(155deg,#0A2A66,#0E5FD8)">
+    <button class="back" onclick="go('home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M15 6l-6 6 6 6"/></svg> Inicio</button>
+    <div class="floortag">Piso · Mi Vehículo</div>
+    <h2>Agregar vehículo</h2>
+    <p>Registra tu auto para personalizar mantención, combustible y viajes desde la app.</p>
+  </div>
+
+  <div class="pad" style="margin-top:16px">
+    <div class="card">
+      <form method="post" action="{% url 'agregar_vehiculo' %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="quote-msg" style="margin-top:0">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div style="display:grid;gap:12px">
+          <div>
+            <label for="id_marca" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Marca</label>
+            {{ form.marca }}
+            {{ form.marca.errors }}
+          </div>
+          <div>
+            <label for="id_modelo" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Modelo</label>
+            {{ form.modelo }}
+            {{ form.modelo.errors }}
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label for="id_anio" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Año</label>
+              {{ form.anio }}
+              {{ form.anio.errors }}
+            </div>
+            <div>
+              <label for="id_tipo_carroceria" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Tipo de carrocería</label>
+              {{ form.tipo_carroceria }}
+              {{ form.tipo_carroceria.errors }}
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label for="id_motor" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Motor</label>
+              {{ form.motor }}
+              {{ form.motor.errors }}
+            </div>
+            <div>
+              <label for="id_combustible" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Combustible</label>
+              {{ form.combustible }}
+              {{ form.combustible.errors }}
+            </div>
+          </div>
+          <div>
+            <label for="id_patente" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Patente</label>
+            {{ form.patente }}
+            {{ form.patente.errors }}
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label for="id_kilometraje" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Kilometraje</label>
+              {{ form.kilometraje }}
+              {{ form.kilometraje.errors }}
+            </div>
+            <div>
+              <label for="id_rendimiento_kml" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin:0 0 6px">Rendimiento</label>
+              {{ form.rendimiento_kml }}
+              {{ form.rendimiento_kml.errors }}
+            </div>
+          </div>
+          {% if form.rendimiento_kml.help_text %}
+          <div class="note" style="padding:0;text-align:left">{{ form.rendimiento_kml.help_text }}</div>
+          {% endif %}
+          <button type="submit" class="homebtn">Guardar vehículo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

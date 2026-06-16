@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db.models import Avg, Sum
 from django.db.models.functions import TruncMonth
 from .models import (PerfilUsuario, Vehiculo, Mantencion, Estacion,
                      Destino, Promocion, Mision)
+from .forms import VehiculoForm, estimar_rendimiento
 from .utils import clp, dec1
 
 
@@ -20,8 +21,7 @@ def calcular_cupo_sugerido(perfil):
     return cupo
 
 
-def home(request):
-    """Renderiza la super app con todos los datos reales desde la base de datos."""
+def build_context(active_screen="home", extra=None):
     perfil = PerfilUsuario.objects.first()
     vehiculo = Vehiculo.objects.first()
     servicios_app = [
@@ -31,6 +31,7 @@ def home(request):
         {"clave": "market", "nombre": "Pronto Market", "icono": "orange", "piso_destino": "market", "sugerido": False},
         {"clave": "full", "nombre": "Beneficios Full", "icono": "amber", "piso_destino": "full", "sugerido": False},
     ]
+    cupo_sugerido = 0
     if perfil:
         perfil.recalcular_saldo_y_puntos()
         cupo_sugerido = calcular_cupo_sugerido(perfil)
@@ -75,11 +76,39 @@ def home(request):
         "misiones": Mision.objects.all(),
         "transacciones_recientes": perfil.transacciones.all()[:5] if perfil else [],
         "notificaciones_recientes": perfil.notificaciones.all()[:5] if perfil else [],
-        "cupo_sugerido": cupo_sugerido if perfil else 0,
+        "cupo_sugerido": cupo_sugerido,
         "cupo_sugerido_fmt": "$" + clp(cupo_sugerido) if perfil else "$0",
         "servicios_app": servicios_app,
         "recomendaciones": recomendaciones,
+        "active_screen": active_screen,
     }
+    if extra:
+        contexto.update(extra)
+    return contexto
+
+
+def home(request):
+    """Renderiza la super app con todos los datos reales desde la base de datos."""
+    return render(request, "superapp/base.html", build_context("home"))
+
+
+def agregar_vehiculo(request):
+    if request.method == "POST":
+        form = VehiculoForm(request.POST)
+        if form.is_valid():
+            vehiculo = form.save(commit=False)
+            perfil = PerfilUsuario.objects.first()
+            vehiculo.propietario = perfil
+            rendimiento = form.cleaned_data.get("rendimiento_kml")
+            if rendimiento in (None, ""):
+                rendimiento = estimar_rendimiento(form.cleaned_data["combustible"])
+            vehiculo.rendimiento_kml = rendimiento
+            vehiculo.save()
+            return redirect("home")
+    else:
+        form = VehiculoForm(initial={"rendimiento_kml": estimar_rendimiento("Gasolina")})
+
+    contexto = build_context("agregar_vehiculo", {"form": form})
     return render(request, "superapp/base.html", contexto)
 
 

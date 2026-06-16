@@ -1,13 +1,13 @@
-<section class="screen active" id="home" data-nav="inicio">
+<section class="screen{% if not active_screen or active_screen == 'home' %} active{% endif %}" id="home" data-nav="inicio">
           <div class="statusbar onblue"><span>9:41</span><div class="dots"><span>5G</span><b></b></div></div>
           <div class="home-top">
             <div class="greet">
-              <div><div class="hi">Hola, buenas tardes</div><div class="name">{{ perfil.nombre }} 👋</div></div>
+              <div><div class="hi">Hola, buenas tardes</div><div class="name">Bienvenido 👋</div></div>
               <div class="home-actions">
                 <button class="bellbtn" onclick="go('actividad')" aria-label="Ver actividad reciente">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/><path d="M9 17a3 3 0 0 0 6 0"/></svg>
                 </button>
-                <div class="avatar">J</div>
+                <div class="avatar">C</div>
               </div>
             </div>
             <div class="wallet">
@@ -36,6 +36,11 @@
                 <div class="ticon" style="background:var(--green-soft)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="#00B377" stroke-width="2"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M5 13h14v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H8v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><circle cx="7.5" cy="15.5" r=".6"/><circle cx="16.5" cy="15.5" r=".6"/></svg>
                 </div><span class="tl">Mi Vehículo</span>
+              </button>
+              <button class="tile" onclick="go('agregar_vehiculo')">
+                <div class="ticon" style="background:#EAF7F1">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00B377" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                </div><span class="tl">Agregar vehículo</span>
               </button>
               <button class="tile" onclick="go('blueexpress')">
                 <div class="ticon" style="background:#E6F0FF">
