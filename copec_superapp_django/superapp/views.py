@@ -109,7 +109,7 @@ def agregar_vehiculo(request):
         form = VehiculoForm(initial={"rendimiento_kml": estimar_rendimiento("Gasolina")})
 
     contexto = build_context("agregar_vehiculo", {"form": form})
-    return render(request, "superapp/base.html", contexto)
+    return render(request, "superapp/agregar_vehiculo_page.html", contexto)
 
 
 def calcular_viaje(request):
