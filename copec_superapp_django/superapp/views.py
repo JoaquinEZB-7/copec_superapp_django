@@ -1,5 +1,7 @@
 import random
+import re
 import time
+import unicodedata
 
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -10,32 +12,103 @@ from .models import (PerfilUsuario, Vehiculo, Mantencion, Estacion,
 from .forms import VehiculoForm, estimar_rendimiento
 from .utils import clp, dec1
 
+# km_offset = km antes del kilometraje actual en que se hizo la mantención
 HISTORIALES_PRESET = [
-    [   # Conductor urbano
-        {"tipo": "Cambio de aceite", "detalle": "Mobil 1 5W-30 sintético · 42.000 km", "color": "blue", "orden": 1},
-        {"tipo": "Revisión neumáticos", "detalle": "Presión y desgaste · 38.500 km", "color": "green", "orden": 2},
-        {"tipo": "Lavado completo", "detalle": "Interior y exterior · 35.000 km", "color": "navy", "orden": 3},
-        {"tipo": "Filtro de aire", "detalle": "Reemplazo · 30.000 km", "color": "orange", "orden": 4},
+    [   # Conductor urbano — aceite reciente, neumáticos algo pendientes
+        {"tipo": "Cambio de aceite", "detalle": "Mobil 1 5W-30 sintético", "color": "blue", "orden": 1, "km_offset": 1260},
+        {"tipo": "Revisión neumáticos", "detalle": "Presión y desgaste", "color": "green", "orden": 2, "km_offset": 4800},
+        {"tipo": "Lavado completo", "detalle": "Interior y exterior", "color": "navy", "orden": 3, "km_offset": 8200},
+        {"tipo": "Filtro de aire", "detalle": "Reemplazo estándar", "color": "orange", "orden": 4, "km_offset": 13400},
     ],
-    [   # Conductor de ruta
-        {"tipo": "Revisión 40.000 km", "detalle": "Completa en taller Copec · 40.000 km", "color": "blue", "orden": 1},
-        {"tipo": "Cambio de neumáticos", "detalle": "4× Bridgestone 225/65 R17 · 38.000 km", "color": "orange", "orden": 2},
-        {"tipo": "Filtro de combustible", "detalle": "Reemplazo · 35.000 km", "color": "green", "orden": 3},
-        {"tipo": "Alineación y balanceo", "detalle": "Ajuste completo · 30.000 km", "color": "navy", "orden": 4},
+    [   # Conductor de ruta — servicio grande reciente, todo al día
+        {"tipo": "Revisión 40.000 km", "detalle": "Completa en taller Copec", "color": "blue", "orden": 1, "km_offset": 2760},
+        {"tipo": "Cambio de neumáticos", "detalle": "4× Bridgestone 225/65 R17", "color": "orange", "orden": 2, "km_offset": 5200},
+        {"tipo": "Filtro de combustible", "detalle": "Reemplazo", "color": "green", "orden": 3, "km_offset": 8400},
+        {"tipo": "Alineación y balanceo", "detalle": "Ajuste completo", "color": "navy", "orden": 4, "km_offset": 13200},
     ],
-    [   # Auto con historial extenso
-        {"tipo": "Pastillas de freno", "detalle": "Eje delantero · 41.000 km", "color": "orange", "orden": 1},
-        {"tipo": "Batería", "detalle": "Reemplazo Bosch 60 Ah · 39.000 km", "color": "blue", "orden": 2},
-        {"tipo": "Cambio de aceite", "detalle": "Shell Helix 10W-40 · 35.000 km", "color": "navy", "orden": 3},
-        {"tipo": "Revisión suspensión", "detalle": "Amortiguadores delanteros · 28.000 km", "color": "green", "orden": 4},
+    [   # Historial extenso — frenos y batería recientes
+        {"tipo": "Pastillas de freno", "detalle": "Eje delantero", "color": "orange", "orden": 1, "km_offset": 1760},
+        {"tipo": "Batería", "detalle": "Reemplazo Bosch 60 Ah", "color": "blue", "orden": 2, "km_offset": 3800},
+        {"tipo": "Cambio de aceite", "detalle": "Shell Helix 10W-40", "color": "navy", "orden": 3, "km_offset": 7800},
+        {"tipo": "Revisión suspensión", "detalle": "Amortiguadores delanteros", "color": "green", "orden": 4, "km_offset": 15200},
     ],
-    [   # Dueño cuidadoso / auto nuevo
-        {"tipo": "Primera revisión", "detalle": "Revisión técnica · 10.000 km", "color": "green", "orden": 1},
-        {"tipo": "Cambio de aceite", "detalle": "Castrol Edge 5W-30 · 10.000 km", "color": "blue", "orden": 2},
-        {"tipo": "Inspección técnica", "detalle": "CITV aprobada · 12.000 km", "color": "navy", "orden": 3},
-        {"tipo": "Detailing completo", "detalle": "Nano cerámica exterior · 15.000 km", "color": "orange", "orden": 4},
+    [   # Dueño cuidadoso — auto más nuevo, primera revisión reciente
+        {"tipo": "Primera revisión", "detalle": "Revisión técnica completa", "color": "green", "orden": 1, "km_offset": 760},
+        {"tipo": "Cambio de aceite", "detalle": "Castrol Edge 5W-30", "color": "blue", "orden": 2, "km_offset": 760},
+        {"tipo": "Inspección técnica", "detalle": "CITV aprobada", "color": "navy", "orden": 3, "km_offset": 3800},
+        {"tipo": "Detailing completo", "detalle": "Nano cerámica exterior", "color": "orange", "orden": 4, "km_offset": 7200},
     ],
 ]
+
+# Orden importa: claves específicas antes que genéricas ("revision" al final)
+_INTERVALOS = [
+    ("neumatico",  {"km": 30000, "desc": "cada 30.000 km"}),
+    ("pastilla",   {"km": 30000, "desc": "cada 30.000 km"}),
+    ("suspension", {"km": 50000, "desc": "cada 50.000 km"}),
+    ("alineacion", {"km": 10000, "desc": "cada 10.000 km"}),
+    ("balanceo",   {"km": 10000, "desc": "cada 10.000 km"}),
+    ("bateria",    {"km": 60000, "desc": "cada 60.000 km"}),
+    ("inspeccion", {"km": 15000, "desc": "anual (~15.000 km)"}),
+    ("detailing",  {"km": 20000, "desc": "cada 20.000 km"}),
+    ("lavado",     {"km": 5000,  "desc": "cada 5.000 km"}),
+    ("filtro",     {"km": 15000, "desc": "cada 15.000 km"}),
+    ("freno",      {"km": 30000, "desc": "cada 30.000 km"}),
+    ("aceite",     {"km": 10000, "desc": "cada 10.000 km"}),
+    ("primera",    {"km": 10000, "desc": "próxima a los 20.000 km"}),
+    ("revision",   {"km": 15000, "desc": "anual (~15.000 km)"}),
+]
+
+
+def _sin_tildes(s):
+    return unicodedata.normalize("NFD", s).encode("ascii", "ignore").decode("ascii").lower()
+
+
+def _extraer_km(m):
+    if m.km_realizado > 0:
+        return m.km_realizado
+    match = re.search(r'(\d{2,3})[.,](\d{3})\s*km', m.detalle)
+    return int(match.group(1) + match.group(2)) if match else 0
+
+
+def calcular_alertas_vehiculo(vehiculo, mantenciones, estacion_cercana):
+    km = vehiculo.kilometraje
+    alertas = []
+    for m in mantenciones:
+        km_hecho = _extraer_km(m)
+        if not km_hecho:
+            continue
+        tipo_norm = _sin_tildes(m.tipo)
+        intervalo = next((d for c, d in _INTERVALOS if c in tipo_norm), None)
+        if not intervalo:
+            continue
+        km_desde = km - km_hecho
+        km_siguiente = km_hecho + intervalo["km"]
+        km_falta = km_siguiente - km
+        if km_falta <= 0:
+            estado, color_estado = "vencido", "#e03131"
+        elif km_falta <= 2000:
+            estado, color_estado = "urgente", "var(--orange)"
+        elif km_falta <= 5000:
+            estado, color_estado = "pronto", "var(--amber)"
+        else:
+            estado, color_estado = "ok", "var(--green)"
+        alertas.append({
+            "tipo": m.tipo,
+            "detalle": m.detalle,
+            "color": m.color,
+            "km_desde": clp(abs(km_desde)),
+            "km_siguiente_fmt": clp(km_siguiente),
+            "km_falta": clp(abs(km_falta)),
+            "estado": estado,
+            "color_estado": color_estado,
+            "desc": intervalo["desc"],
+            "estacion": estacion_cercana,
+            "vencido": km_falta <= 0,
+            "mostrar_copec": estado in ("urgente", "vencido"),
+        })
+    prioridad = {"vencido": 0, "urgente": 1, "pronto": 2, "ok": 3}
+    alertas.sort(key=lambda a: prioridad[a["estado"]])
+    return alertas
 
 
 def calcular_cupo_sugerido(perfil):
@@ -118,10 +191,15 @@ def build_context(active_screen="home", extra=None):
             "valor_puntos_clp": "$" + clp(perfil.puntos_full // 2),
         }
 
+    mantenciones = list(Mantencion.objects.filter(vehiculo=vehiculo)) if vehiculo else []
+    estacion_cercana = estaciones[0] if estaciones else None
+    alertas_vehiculo = calcular_alertas_vehiculo(vehiculo, mantenciones, estacion_cercana) if vehiculo else []
+
     contexto = {
         "perfil": perfil,
         "vehiculo": vehiculo,
-        "mantenciones": Mantencion.objects.filter(vehiculo=vehiculo) if vehiculo else [],
+        "mantenciones": mantenciones,
+        "alertas_vehiculo": alertas_vehiculo,
         "estaciones": estaciones,
         "destinos": Destino.objects.all(),
         "promociones": Promocion.objects.all(),
@@ -157,8 +235,15 @@ def agregar_vehiculo(request):
                 rendimiento = estimar_rendimiento(form.cleaned_data["combustible"])
             vehiculo.rendimiento_kml = rendimiento
             vehiculo.save()
-            for item in random.choice(HISTORIALES_PRESET):
-                Mantencion.objects.create(vehiculo=vehiculo, **item)
+            km_actual = vehiculo.kilometraje
+            preset = random.choice(HISTORIALES_PRESET)
+            max_offset = max(p["km_offset"] for p in preset)
+            escala = min(1.0, km_actual / (max_offset + 1000)) if max_offset else 1.0
+            for item in preset:
+                item_copy = dict(item)
+                km_offset = item_copy.pop("km_offset")
+                item_copy["km_realizado"] = max(200, km_actual - int(km_offset * escala))
+                Mantencion.objects.create(vehiculo=vehiculo, **item_copy)
             return redirect("/?screen=vehiculo")
     else:
         form = VehiculoForm(initial={"rendimiento_kml": estimar_rendimiento("Gasolina")})

@@ -57,6 +57,32 @@
               <p>Último aceite usado: <b>{{ vehiculo.aceite_actual }}</b>. El fabricante recomienda {{ vehiculo.presion_del }} psi delanteros / {{ vehiculo.presion_tra }} psi traseros.</p>
             </div>
 
+            {% if alertas_vehiculo %}
+            <h3 class="block">Alertas y recomendaciones</h3>
+            {% for a in alertas_vehiculo %}
+            <div class="card" style="margin-bottom:10px;border-left:3px solid {{ a.color_estado }}">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+                <h6 style="margin:0 0 4px;font-size:13px;font-weight:700;flex:1">{{ a.tipo }}</h6>
+                <span class="pill" style="background:{{ a.color_estado }}22;color:{{ a.color_estado }};white-space:nowrap;flex-shrink:0">
+                  {% if a.vencido %}Vencido{% elif a.estado == "urgente" %}Urgente{% elif a.estado == "pronto" %}Próximamente{% else %}Al día{% endif %}
+                </span>
+              </div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:6px">{{ a.detalle }} · {{ a.desc }}</div>
+              {% if a.vencido %}
+              <div style="font-size:12px;font-weight:600;color:#e03131">Vencido por {{ a.km_falta }} km — agenda tu mantención</div>
+              {% else %}
+              <div style="font-size:12px;color:var(--ink)">Realizado hace <b>{{ a.km_desde }} km</b> · próximo a los <b>{{ a.km_siguiente_fmt }} km</b> · faltan <b style="color:{{ a.color_estado }}">{{ a.km_falta }} km</b></div>
+              {% endif %}
+              {% if a.mostrar_copec and a.estacion %}
+              <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.5 8-13a8 8 0 1 0-16 0c0 5.5 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                <span><b>{{ a.estacion.nombre }}</b> · {{ a.estacion.distancia_fmt }} km · {{ a.estacion.servicios }}</span>
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
+
             <h3 class="block">Historial del vehículo</h3>
             <div class="card">
               <div class="timeline">

@@ -141,6 +141,7 @@ class Mantencion(models.Model):
     detalle = models.CharField(max_length=120)
     color = models.CharField(max_length=10, choices=COLORES, default="blue")
     orden = models.IntegerField(default=0)
+    km_realizado = models.IntegerField("Km al realizar", default=0)
 
     class Meta:
         ordering = ["orden"]
