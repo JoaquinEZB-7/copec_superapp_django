@@ -286,16 +286,16 @@
 
   @media (max-width: 640px){
     body{
-      padding:0;
-      align-items:stretch;
-      justify-content:flex-start;
+      padding:20px 16px;
+      align-items:flex-start;
+      justify-content:center;
     }
 
     .stage{
       width:100%;
       gap:0;
       flex-direction:column;
-      align-items:stretch;
+      align-items:center;
       justify-content:flex-start;
       max-width:none;
     }
@@ -303,16 +303,15 @@
     .pitch{display:none}
 
     .phone{
-      width:100%;
-      height:100vh;
-      padding:0;
-      border-radius:0;
-      box-shadow:none;
+      --pw: min(calc(100vw - 32px), 360px);
+      width:var(--pw);
+      height:calc(var(--pw) * 2.051);
+      padding:9px;
+      border-radius:40px;
+      box-shadow:0 20px 60px -12px rgba(0,0,0,.6), 0 0 0 2px #1c2230;
     }
 
     .screenwrap{
-      border-radius:0;
+      border-radius:32px;
     }
-
-    .notch{display:none}
   }

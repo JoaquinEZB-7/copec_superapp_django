@@ -1,3 +1,6 @@
+import random
+import time
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db.models import Avg, Sum
@@ -6,6 +9,33 @@ from .models import (PerfilUsuario, Vehiculo, Mantencion, Estacion,
                      Destino, Promocion, Mision)
 from .forms import VehiculoForm, estimar_rendimiento
 from .utils import clp, dec1
+
+HISTORIALES_PRESET = [
+    [   # Conductor urbano
+        {"tipo": "Cambio de aceite", "detalle": "Mobil 1 5W-30 sintético · 42.000 km", "color": "blue", "orden": 1},
+        {"tipo": "Revisión neumáticos", "detalle": "Presión y desgaste · 38.500 km", "color": "green", "orden": 2},
+        {"tipo": "Lavado completo", "detalle": "Interior y exterior · 35.000 km", "color": "navy", "orden": 3},
+        {"tipo": "Filtro de aire", "detalle": "Reemplazo · 30.000 km", "color": "orange", "orden": 4},
+    ],
+    [   # Conductor de ruta
+        {"tipo": "Revisión 40.000 km", "detalle": "Completa en taller Copec · 40.000 km", "color": "blue", "orden": 1},
+        {"tipo": "Cambio de neumáticos", "detalle": "4× Bridgestone 225/65 R17 · 38.000 km", "color": "orange", "orden": 2},
+        {"tipo": "Filtro de combustible", "detalle": "Reemplazo · 35.000 km", "color": "green", "orden": 3},
+        {"tipo": "Alineación y balanceo", "detalle": "Ajuste completo · 30.000 km", "color": "navy", "orden": 4},
+    ],
+    [   # Auto con historial extenso
+        {"tipo": "Pastillas de freno", "detalle": "Eje delantero · 41.000 km", "color": "orange", "orden": 1},
+        {"tipo": "Batería", "detalle": "Reemplazo Bosch 60 Ah · 39.000 km", "color": "blue", "orden": 2},
+        {"tipo": "Cambio de aceite", "detalle": "Shell Helix 10W-40 · 35.000 km", "color": "navy", "orden": 3},
+        {"tipo": "Revisión suspensión", "detalle": "Amortiguadores delanteros · 28.000 km", "color": "green", "orden": 4},
+    ],
+    [   # Dueño cuidadoso / auto nuevo
+        {"tipo": "Primera revisión", "detalle": "Revisión técnica · 10.000 km", "color": "green", "orden": 1},
+        {"tipo": "Cambio de aceite", "detalle": "Castrol Edge 5W-30 · 10.000 km", "color": "blue", "orden": 2},
+        {"tipo": "Inspección técnica", "detalle": "CITV aprobada · 12.000 km", "color": "navy", "orden": 3},
+        {"tipo": "Detailing completo", "detalle": "Nano cerámica exterior · 15.000 km", "color": "orange", "orden": 4},
+    ],
+]
 
 
 def calcular_cupo_sugerido(perfil):
@@ -66,11 +96,33 @@ def build_context(active_screen="home", extra=None):
                 "piso_destino": "mantencion",
                 "tono": "green",
             })
+    _rng = random.Random(int(time.time()) // 600)
+    _estados = [
+        ("Libre",    "var(--green)"),
+        ("Moderada", "var(--amber)"),
+        ("Llena",    "#e03131"),
+    ]
+    estaciones = list(Estacion.objects.all())
+    for e in estaciones:
+        st = _rng.choices(_estados, weights=[0.5, 0.35, 0.15])[0]
+        e.ocupacion_label = st[0]
+        e.ocupacion_color = st[1]
+
+    resumen_valor = None
+    if perfil:
+        n_inter = perfil.transacciones.count()
+        n_svc = perfil.transacciones.values("tipo").distinct().count()
+        resumen_valor = {
+            "n_interacciones": n_inter,
+            "n_servicios": n_svc,
+            "valor_puntos_clp": "$" + clp(perfil.puntos_full // 2),
+        }
+
     contexto = {
         "perfil": perfil,
         "vehiculo": vehiculo,
         "mantenciones": Mantencion.objects.filter(vehiculo=vehiculo) if vehiculo else [],
-        "estaciones": Estacion.objects.all(),
+        "estaciones": estaciones,
         "destinos": Destino.objects.all(),
         "promociones": Promocion.objects.all(),
         "misiones": Mision.objects.all(),
@@ -80,6 +132,7 @@ def build_context(active_screen="home", extra=None):
         "cupo_sugerido_fmt": "$" + clp(cupo_sugerido) if perfil else "$0",
         "servicios_app": servicios_app,
         "recomendaciones": recomendaciones,
+        "resumen_valor": resumen_valor,
         "active_screen": active_screen,
     }
     if extra:
@@ -104,6 +157,8 @@ def agregar_vehiculo(request):
                 rendimiento = estimar_rendimiento(form.cleaned_data["combustible"])
             vehiculo.rendimiento_kml = rendimiento
             vehiculo.save()
+            for item in random.choice(HISTORIALES_PRESET):
+                Mantencion.objects.create(vehiculo=vehiculo, **item)
             return redirect("/?screen=vehiculo")
     else:
         form = VehiculoForm(initial={"rendimiento_kml": estimar_rendimiento("Gasolina")})

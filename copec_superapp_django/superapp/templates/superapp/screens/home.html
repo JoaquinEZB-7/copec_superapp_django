@@ -97,17 +97,17 @@
 
             <div class="sectlabel">Hoy con Copec <a>Ver todo</a></div>
             <div class="carousel">
-              <div class="promo" style="background:linear-gradient(135deg,#0E5FD8,#0A2A66)">
+              <div class="promo" style="background:linear-gradient(135deg,#0E5FD8,#0A2A66);cursor:pointer" onclick="marketChangeQty('cafe',1);go('market')">
                 <div class="ribbon">2x1</div>
                 <div class="blob" style="width:120px;height:120px;background:#1f74ff;top:-30px;right:-20px"></div>
                 <h4>Café Pronto 2x1</h4><p>Todos los días antes de las 11:00 hrs</p>
               </div>
-              <div class="promo" style="background:linear-gradient(135deg,#FF6A13,#FFB020)">
+              <div class="promo" style="background:linear-gradient(135deg,#FF6A13,#FFB020);cursor:pointer" onclick="go('full')">
                 <div class="ribbon">+15%</div>
                 <div class="blob" style="width:130px;height:130px;background:#ff8b3d;bottom:-40px;left:-10px"></div>
                 <h4>Puntos Full x1.5</h4><p>Cargando con Copec Pay este fin de semana</p>
               </div>
-              <div class="promo" style="background:linear-gradient(135deg,#00B377,#0a8f60)">
+              <div class="promo" style="background:linear-gradient(135deg,#00B377,#0a8f60);cursor:pointer" onclick="go('carga')">
                 <div class="ribbon">Eco</div>
                 <h4>Carga eléctrica</h4><p>$120/kWh en estaciones seleccionadas</p>
               </div>
@@ -123,6 +123,26 @@
               {% endfor %}
             </div>
 
+            {% if resumen_valor %}
+            <div class="sectlabel">Tu valor Copec</div>
+            <div class="card" style="background:linear-gradient(135deg,#11203f,#1c3a6b);color:#fff;border:none">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+                <div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7fa7ff;margin-bottom:4px">Puntos acumulados</div>
+                  <div style="font-size:24px;font-weight:800;font-family:'Bricolage Grotesque'">{{ perfil.puntos_fmt }}</div>
+                  <div style="font-size:12px;color:#aebfe6">≈ {{ resumen_valor.valor_puntos_clp }} en canjes</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7fa7ff;margin-bottom:4px">Servicios usados</div>
+                  <div style="font-size:24px;font-weight:800;font-family:'Bricolage Grotesque'">{{ resumen_valor.n_servicios }}</div>
+                  <div style="font-size:12px;color:#aebfe6">en {{ resumen_valor.n_interacciones }} interacciones</div>
+                </div>
+              </div>
+              <div style="font-size:11px;color:#7fa7ff;padding-top:10px;border-top:1px solid rgba(255,255,255,.12)">
+                Toda tu actividad Copec centralizada — combustible, Market, mantención y más.
+              </div>
+            </div>
+            {% endif %}
             <div class="sectlabel">Tu vehículo <a onclick="go('vehiculo')">Detalle</a></div>
             <div class="card tap" onclick="go('vehiculo')">
               <div class="row">
