@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1200">
 <title>Copec · Super App de Movilidad Prototipo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +52,7 @@
         {% include "superapp/screens/mantencion.html" %}
         {% include "superapp/screens/seguros.html" %}
         {% include "superapp/screens/market.html" %}
-
+        {% include "superapp/screens/agregar_vehiculo.html" %}
         {% include "superapp/screens/viaje.html" %}
         {% include "superapp/screens/mapa.html" %}
         {% include "superapp/screens/full.html" %}
@@ -80,6 +80,7 @@
 </script>
 <script src="{% static 'superapp/js/app.js' %}"></script>
 <script>
+  history.replaceState({screen: 'home'}, '');
   if (INITIAL_SCREEN && INITIAL_SCREEN !== 'home') {
     go(INITIAL_SCREEN);
   }

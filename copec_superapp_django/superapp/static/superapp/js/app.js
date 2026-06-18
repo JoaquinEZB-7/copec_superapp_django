@@ -226,7 +226,7 @@
     }
   }
 
-  function go(id){
+  function go(id, pushHistory = true){
     const cur = vp.querySelector('.screen.active');
     const next = document.getElementById(id);
     if(cur===next) return;
@@ -241,7 +241,13 @@
       b.classList.toggle('on', !!navTarget && b.dataset.target===navTarget);
     });
     onScreenChange(next);
+    if(pushHistory) history.pushState({screen: id}, '');
   }
+
+  window.addEventListener('popstate', function(e){
+    const screen = (e.state && e.state.screen) ? e.state.screen : 'home';
+    go(screen, false);
+  });
 
   // El cálculo del viaje se hace EN EL BACKEND (Django) usando los datos reales del vehículo.
   async function pickDest(btn){

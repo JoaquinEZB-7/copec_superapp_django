@@ -23,7 +23,7 @@ def calcular_cupo_sugerido(perfil):
 
 def build_context(active_screen="home", extra=None):
     perfil = PerfilUsuario.objects.first()
-    vehiculo = Vehiculo.objects.first()
+    vehiculo = Vehiculo.objects.last()
     servicios_app = [
         {"clave": "combustible", "nombre": "Combustible", "icono": "blue", "piso_destino": "mapa", "sugerido": False},
         {"clave": "vehiculo", "nombre": "Mi Vehículo", "icono": "green", "piso_destino": "vehiculo", "sugerido": False},
@@ -88,8 +88,8 @@ def build_context(active_screen="home", extra=None):
 
 
 def home(request):
-    """Renderiza la super app con todos los datos reales desde la base de datos."""
-    return render(request, "superapp/base.html", build_context("home"))
+    active_screen = request.GET.get("screen", "home")
+    return render(request, "superapp/base.html", build_context(active_screen))
 
 
 def agregar_vehiculo(request):
@@ -104,12 +104,12 @@ def agregar_vehiculo(request):
                 rendimiento = estimar_rendimiento(form.cleaned_data["combustible"])
             vehiculo.rendimiento_kml = rendimiento
             vehiculo.save()
-            return redirect("home")
+            return redirect("/?screen=vehiculo")
     else:
         form = VehiculoForm(initial={"rendimiento_kml": estimar_rendimiento("Gasolina")})
 
     contexto = build_context("agregar_vehiculo", {"form": form})
-    return render(request, "superapp/agregar_vehiculo_page.html", contexto)
+    return render(request, "superapp/base.html", contexto)
 
 
 def calcular_viaje(request):
