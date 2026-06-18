@@ -18,17 +18,17 @@
     font-family:'Hanken Grotesk',sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
+  html,body{height:100%;background:#0a1d44}
   body{
     background:
       radial-gradient(120% 90% at 80% -10%, #11337a 0%, transparent 55%),
       radial-gradient(120% 90% at -10% 110%, #0a1f4a 0%, transparent 50%),
       #0a1d44;
-    display:flex;align-items:flex-start;justify-content:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
     min-height:100vh;padding:26px 14px;color:var(--ink);
   }
   /* ---------- Phone frame ---------- */
-  .stage{display:flex;gap:38px;align-items:flex-start;flex-wrap:wrap;justify-content:center;max-width:1080px;margin:0 auto}
+  .stage{display:flex;gap:38px;align-items:flex-start;flex-wrap:wrap;justify-content:center;max-width:1080px;margin:auto 0}
   .pitch{color:#cfe0ff;max-width:300px;padding-top:34px}
   .pitch .kick{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#7fa7ff;font-weight:600}
   .pitch h1{font-family:'Bricolage Grotesque';font-size:34px;line-height:1.04;color:#fff;margin:14px 0 16px;font-weight:700}
